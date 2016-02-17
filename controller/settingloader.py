@@ -3,11 +3,11 @@ import json
 __author__ = 'Kellan Childers'
 
 
-def get_main_directory():
+def get_main_directory(directory_name='DungeonMaker'):
     full_path = os.path.realpath(__file__)
     directory, file = os.path.split(full_path)
 
-    while file != '2048_Rogue':
+    while file != directory_name:
         directory, file = os.path.split(directory)
 
     return os.path.join(directory, file)

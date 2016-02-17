@@ -4,10 +4,4 @@ __author__ = 'Kellan Childers'
    Actual functions should be defined in controller.keycontrols.keyfunctions."""
 
 functions = {
-    "quit": finish,
-    "continue": skip,
-    "up": move_up,
-    "down": move_down,
-    "left": move_left,
-    "right": move_right
 }
