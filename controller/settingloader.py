@@ -3,7 +3,12 @@ import json
 __author__ = 'Kellan Childers'
 
 
-def get_main_directory(directory_name='DungeonMaker'):
+def get_main_directory(directory_name='2048_RAE'):
+    """Find the absolute path to the main directory of application.
+
+    :param directory_name: the name of the main directory (default '2048_RAE')
+    :return: the absolute path to the main directory
+    """
     full_path = os.path.realpath(__file__)
     directory, file = os.path.split(full_path)
 
@@ -14,6 +19,11 @@ def get_main_directory(directory_name='DungeonMaker'):
 
 
 def read_settings(file):
+    """Read a json file in the settings folder.
+
+    :param file: the settings file to read
+    :return: the settings in a python dictionary
+    """
     directory = get_main_directory()
     os.chdir(directory)
 

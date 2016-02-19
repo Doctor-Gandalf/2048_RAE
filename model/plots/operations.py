@@ -5,6 +5,18 @@ from model.plots.plot import Plot
 __author__ = 'Kellan Childers'
 
 
+def point_iterator(width, height):
+    """Convenience iterator to work with points in a plot.
+
+    :param width: the width of the plot
+    :param height: the height of the plot
+    :return: an iterator over the points
+    """
+    for x in range(width):
+        for y in range(height):
+            yield x, y
+
+
 def positive_integer(value):
     """Force value to be a positive integer
 
@@ -37,6 +49,7 @@ def surrounding(plot, point):
     try:
         surround_list.remove(plot[x][y])
     except ValueError:
+        # (x, y) wasn't in the plot and can be ignored.
         pass
 
     return surround_list
@@ -100,7 +113,7 @@ def resize(plot, new_dimensions, fill=None):
     """
     width, height = map(positive_integer, new_dimensions)
 
-    # This is avoids an the try-except loop.
+    # This is avoids the try-except loop.
     if width == len(plot) and height == len(plot[0]):
         return copy(plot)
 
@@ -115,3 +128,9 @@ def resize(plot, new_dimensions, fill=None):
                 pass
 
     return new_plot
+
+if __name__ == "__main__":
+    demo_plot = Plot(4, 4)
+    for x, y in point_iterator(len(demo_plot[0]), len(demo_plot)):
+        demo_plot[x, y] = x + y
+    print(demo_plot)
