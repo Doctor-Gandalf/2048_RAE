@@ -5,7 +5,7 @@ from model.plots.plot import Plot
 __author__ = 'Kellan Childers'
 
 
-def point_iterator(width, height):
+def points(width, height):
     """Convenience iterator to work with points in a plot.
     Note: width and height must be both ints or lists, not of mixed type.
 
@@ -47,7 +47,7 @@ def surrounding(plot, point):
     x, y = map(positive_integer, point)
     surround_list = []
 
-    for i, j in point_iterator([-1, 2], [-1, 2]):
+    for i, j in points([-1, 2], [-1, 2]):
         try:
             surround_list += [plot[x + i, y + j]] if x + i >= 0 and y + j >= 0 else []
         except IndexError:
@@ -72,7 +72,7 @@ def read_from_file(filename):
         reader = load(read_file)
 
     plot = Plot(len(reader), len(reader[0]))
-    for x, y in point_iterator(len(reader), len(reader[0])):
+    for x, y in points(len(reader), len(reader[0])):
         plot[x, y] = reader[x][y]
 
     return plot
@@ -101,7 +101,7 @@ def copy(plot):
     """
     new_plot = Plot(len(plot), len(plot[0]))
 
-    for x, y in point_iterator(len(plot), len(plot[0])):
+    for x, y in points(len(plot), len(plot[0])):
         new_plot[x, y] = plot[x, y]
 
     return new_plot
@@ -124,7 +124,7 @@ def resize(plot, new_dimensions, fill=None):
 
     new_plot = Plot(width, height, fill)
 
-    for x, y in point_iterator(len(plot), len(plot[0])):
+    for x, y in points(len(plot), len(plot[0])):
         try:
             new_plot[x, y] = plot[x, y]
         except IndexError:
@@ -136,7 +136,7 @@ def resize(plot, new_dimensions, fill=None):
 
 if __name__ == "__main__":
     demo_plot = Plot(4, 4)
-    for example_x, example_y in point_iterator(len(demo_plot[0]), len(demo_plot)):
+    for example_x, example_y in points(len(demo_plot[0]), len(demo_plot)):
         demo_plot[example_x, example_y] = example_x + example_y
 
     print('Demoing Plot operations:\n\nShowing demo 4x4 plot.')

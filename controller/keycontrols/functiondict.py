@@ -4,4 +4,6 @@ __author__ = 'Kellan Childers'
    Actual functions should be defined in controller.keycontrols.keyfunctions."""
 
 functions = {
+    'skip': skip,
+    'quit': finish
 }
