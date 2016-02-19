@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from json import load, dump
 from model.plots.plot import Plot
 
