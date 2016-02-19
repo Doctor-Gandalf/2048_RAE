@@ -15,14 +15,14 @@ def point_iterator(width, height):
     """
     if isinstance(width, type([])):
         # Check if width and height are sequences.
-        for x in range(*width):
-            for y in range(*height):
-                yield x, y
+        for outer_val in range(*width):
+            for inner_val in range(*height):
+                yield inner_val, outer_val
     else:
         # Width and height are ints and can be handled normally.
-        for x in range(width):
-            for y in range(height):
-                yield x, y
+        for outer_val in range(width):
+            for inner_val in range(height):
+                yield inner_val, outer_val
 
 
 def positive_integer(value):
