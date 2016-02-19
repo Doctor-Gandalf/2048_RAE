@@ -1,5 +1,4 @@
 from json import load, dump
-
 from model.plots.plot import Plot
 
 __author__ = 'Kellan Childers'
@@ -7,14 +6,22 @@ __author__ = 'Kellan Childers'
 
 def point_iterator(width, height):
     """Convenience iterator to work with points in a plot.
+    Note: width and height must be both ints or lists, not of mixed type.
 
     :param width: the width of the plot
     :param height: the height of the plot
     :return: an iterator over the points
     """
-    for x in range(width):
-        for y in range(height):
-            yield x, y
+    if isinstance(width, type([])):
+        # Check if width and height are sequences.
+        for x in range(*width):
+            for y in range(*height):
+                yield x, y
+    else:
+        # Width and height are ints and can be handled normally.
+        for x in range(width):
+            for y in range(height):
+                yield x, y
 
 
 def positive_integer(value):
@@ -39,15 +46,14 @@ def surrounding(plot, point):
     x, y = map(positive_integer, point)
     surround_list = []
 
-    for i in range(-1, 2):
-        for j in range(-1, 2):
-            try:
-                surround_list += [plot[x+i][y+j]] if x+i >= 0 and y + j >= 0 else []
-            except IndexError:
-                pass
+    for i, j in point_iterator([-1, 2], [-1, 2]):
+        try:
+            surround_list += [plot[x + i, y + j]] if x + i >= 0 and y + j >= 0 else []
+        except IndexError:
+            pass
 
     try:
-        surround_list.remove(plot[x][y])
+        surround_list.remove(plot[x, y])
     except ValueError:
         # (x, y) wasn't in the plot and can be ignored.
         pass
@@ -65,9 +71,8 @@ def read_from_file(filename):
         reader = load(read_file)
 
     plot = Plot(len(reader), len(reader[0]))
-    for x in range(len(reader)):
-        for y in range(len(reader[0])):
-            plot[x][y] = reader[x][y]
+    for x, y in point_iterator(len(reader), len(reader[0])):
+        plot[x, y] = reader[x][y]
 
     return plot
 
@@ -95,9 +100,8 @@ def copy(plot):
     """
     new_plot = Plot(len(plot), len(plot[0]))
 
-    for x in range(len(plot)):
-        for y in range(len(plot[0])):
-            new_plot[x][y] = plot[x][y]
+    for x, y in point_iterator(len(plot), len(plot[0])):
+        new_plot[x, y] = plot[x, y]
 
     return new_plot
 
@@ -119,18 +123,32 @@ def resize(plot, new_dimensions, fill=None):
 
     new_plot = Plot(width, height, fill)
 
-    for x in range(len(plot)):
-        for y in range(len(plot[0])):
-            try:
-                new_plot[x][y] = plot[x][y]
-            except IndexError:
-                # Dimensions are smaller than before and elements can be skipped.
-                pass
+    for x, y in point_iterator(len(plot), len(plot[0])):
+        try:
+            new_plot[x, y] = plot[x, y]
+        except IndexError:
+            # Dimensions are smaller than before and elements can be skipped.
+            pass
 
     return new_plot
 
+
 if __name__ == "__main__":
     demo_plot = Plot(4, 4)
-    for x, y in point_iterator(len(demo_plot[0]), len(demo_plot)):
-        demo_plot[x, y] = x + y
+    for example_x, example_y in point_iterator(len(demo_plot[0]), len(demo_plot)):
+        demo_plot[example_x, example_y] = example_x + example_y
+
+    print('Demoing Plot operations:\n\nShowing demo 4x4 plot.')
     print(demo_plot)
+
+    print('\nShowing ability to copy plot.')
+    print(copy(demo_plot))
+
+    print('\nShowing ability to find elements around (1, 3)')
+    print(surrounding(demo_plot, (1, 3)))
+
+    print('\nShowing ability to resize plot to 5x5.')
+    print(resize(demo_plot, (5, 5)))
+
+    print('\nShowing ability to resize plot to 3x3.')
+    print(resize(demo_plot, (3, 3)))
