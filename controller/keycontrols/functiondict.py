@@ -5,5 +5,9 @@ __author__ = 'Kellan Childers'
 
 functions = {
     'skip': skip,
-    'quit': finish
+    'quit': finish,
+    'up': board_up,
+    'down': board_down,
+    'left': board_left,
+    'right': board_right
 }

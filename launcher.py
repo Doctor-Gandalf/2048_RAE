@@ -3,8 +3,8 @@ import os
 import curses
 import controller.settingloader as sl
 import controller.viewcontrols as vc
-import controller.keycontrols as kc
-import model.boards as brd
+import controller.gamecontrols as gc
+from model.boards import board
 
 __author__ = 'Kellan Childers'
 
@@ -14,15 +14,12 @@ def app(stdscr):
     vc.create_color_schemes()
     vc.init(stdscr)
 
-    # Setup board.
-    board = brd.demo(brd.board)
+    # Start screen and run first command
+    should_play = gc.show_startup(stdscr, board)
 
-    # Show the board.
-    stdscr.addstr(0, 0, str(board))
-    stdscr.refresh()
-
-    # Continue executing commands until app ends.
-    kc.do_commands(stdscr)
+    if should_play:
+        # Continue executing commands until app ends.
+        gc.play_game(stdscr, board)
 
 
 if __name__ == "__main__":
