@@ -25,11 +25,29 @@ def points(width, height):
                 yield inner_val, outer_val
 
 
+def points_of(plot):
+    """Iterate over a plot without needing to know its width and height.
+
+    :param plot: the plot to iterate over
+    :return: an iterator over the points
+    """
+    return points(*(get_dimensions(plot)))
+
+
+def get_dimensions(plot):
+    """Get the width and height of the plot.
+
+    :param plot: the plot to measure
+    :return: the width and height as a tuple
+    """
+    return len(plot), len(plot[0])
+
+
 def positive_integer(value):
     """Force value to be a positive integer
 
-    :param value: The value to test
-    :return: The value if it is positive
+    :param value: the value to test
+    :return: the value if it is positive
     """
     if value < 0:
         raise TypeError("Argument must be positive integer")
@@ -71,8 +89,8 @@ def read_from_file(filename):
     with open(filename, 'r') as read_file:
         reader = load(read_file)
 
-    plot = Plot(len(reader), len(reader[0]))
-    for x, y in points(len(reader), len(reader[0])):
+    plot = Plot(*(get_dimensions(reader)))
+    for x, y in points_of(plot):
         plot[x, y] = reader[x][y]
 
     return plot
@@ -99,9 +117,9 @@ def copy(plot):
     :type plot: Plot
     :return: a copy of the graph
     """
-    new_plot = Plot(len(plot), len(plot[0]))
+    new_plot = Plot(*(get_dimensions(plot)))
 
-    for x, y in points(len(plot), len(plot[0])):
+    for x, y in points_of(plot):
         new_plot[x, y] = plot[x, y]
 
     return new_plot
@@ -124,7 +142,7 @@ def resize(plot, new_dimensions, fill=None):
 
     new_plot = Plot(width, height, fill)
 
-    for x, y in points(len(plot), len(plot[0])):
+    for x, y in points_of(plot):
         try:
             new_plot[x, y] = plot[x, y]
         except IndexError:
@@ -134,9 +152,18 @@ def resize(plot, new_dimensions, fill=None):
     return new_plot
 
 
+def clear(plot):
+    """Make a plot of equal size, clear of all entries.
+
+    :param plot: the plot to clear
+    :return: a cleared plot
+    """
+    return Plot(*(get_dimensions(plot)))
+
+
 if __name__ == "__main__":
     demo_plot = Plot(4, 4)
-    for example_x, example_y in points(len(demo_plot[0]), len(demo_plot)):
+    for example_x, example_y in points_of(demo_plot):
         demo_plot[example_x, example_y] = example_x + example_y
 
     print('Demoing Plot operations:\n\nShowing demo 4x4 plot.')
@@ -149,7 +176,13 @@ if __name__ == "__main__":
     print(surrounding(demo_plot, (1, 3)))
 
     print('\nShowing ability to resize plot to 5x5.')
-    print(resize(demo_plot, (5, 5)))
+    demo_plot = resize(demo_plot, (5, 5))
+    print(demo_plot)
 
     print('\nShowing ability to resize plot to 3x3.')
-    print(resize(demo_plot, (3, 3)))
+    demo_plot = resize(demo_plot, (3, 3))
+    print(demo_plot)
+
+    print('\nShowing ability to clear plot.')
+    demo_plot = clear(demo_plot)
+    print(demo_plot)

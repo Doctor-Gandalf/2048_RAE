@@ -20,6 +20,12 @@ def execute_command(key, key_set=main_keys):
 
 
 def do_commands(stdscr):
+    """Execute commands repeatedly until told to stop.
+    Note: Uses specific curses functionality.
+
+    :param stdscr: the standard screen.
+    :return: null
+    """
     running = True
     while running:
         key = stdscr.getkey()
