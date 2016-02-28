@@ -22,7 +22,7 @@ class Tile:
         if self == other:
             pass
         else:
-            raise ValueError("Cannot add two non-equal tiles.")
+            raise TypeError("Cannot add two non-equal tiles.")
 
     def __eq__(self, other):
         """Compares tile with another object.

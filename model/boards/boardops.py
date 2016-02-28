@@ -1,6 +1,7 @@
 import model.plots as pl
 import model.dice as dc
 from .tile import Tile
+
 __author__ = 'Kellan Childers'
 
 
@@ -49,125 +50,182 @@ def place_tile(stdbrd):
     return stdbrd
 
 
+def move(stdbrd, direction):
+    if direction == 'up':
+        vertical_sum(stdbrd, (0, 1), pl.get_dimensions(stdbrd))
+        vertical_slide(stdbrd, lambda x: x - 1, [[4], [1, 4]])
+    elif direction == 'down':
+        vertical_sum(stdbrd, (0, -1), [[4, -1, -1], [4, -1, -1]])
+        vertical_slide(stdbrd, lambda x: x + 1, [[4, -1, -1], [3, -1, -1]])
+    elif direction == 'left':
+        horizontal_sum(stdbrd, (1, 0), pl.get_dimensions(stdbrd))
+        horizontal_slide(stdbrd, lambda x: x - 1, [[4], [1, 4]])
+    elif direction == 'right':
+        horizontal_sum(stdbrd, (-1, 0), [[4, -1, -1], [4, -1, -1]])
+        horizontal_slide(stdbrd, lambda x: x + 1, [[4, -1, -1], [3, -1, -1]])
+
+        # place_tile(stdbrd)
+
+
+def vertical_sum(stdbrd, move, dimensions):
+    move_x, move_y = move
+    width, height = dimensions
+    old_board = pl.copy(stdbrd)
+
+    for x, y in pl.points(width, height):
+        try:
+            stdbrd[x, y] += old_board[x + move_x, y + move_y]
+            stdbrd[x + move_x, y + move_y] = None
+            old_board[x + move_x, y + move_y] = None
+        except TypeError:
+            pass
+        except IndexError:
+            pass
+
+
+def horizontal_sum(stdbrd, move, dimensions):
+    move_x, move_y = move
+    width, height = dimensions
+    old_board = pl.copy(stdbrd)
+
+    for y, x in pl.points(width, height):
+        try:
+            stdbrd[x, y] += old_board[x + move_x, y + move_y]
+            stdbrd[x + move_x, y + move_y] = None
+            old_board[x + move_x, y + move_y] = None
+        except TypeError:
+            pass
+        except IndexError:
+            pass
+
+
+def vertical_slide(stdbrd, direction_function, dimensions):
+    width, height = dimensions
+
+    for x, y in pl.points(width, height):
+        i = y
+        try:
+            while stdbrd[x, direction_function(i)] is None:
+                stdbrd[x, direction_function(i)] = stdbrd[x, y]
+                stdbrd[x, i] = None
+                i = direction_function(i)
+        except IndexError:
+            pass
+
+
+def horizontal_slide(stdbrd, direction_function, dimensions):
+    width, height = dimensions
+
+    for y, x in pl.points(width, height):
+        i = x
+        try:
+            while stdbrd[direction_function(i), y] is None:
+                stdbrd[direction_function(i), y] = stdbrd[x, y]
+                stdbrd[i, y] = None
+                i = direction_function(i)
+        except IndexError:
+            pass
+
+
 def move_up(stdbrd):
-    x_move, y_move = 0, 1
-    old = pl.copy(stdbrd)
+    old_board = pl.copy(stdbrd)
 
-    for y in range(4):
-        for x in range(4):
-            try:
-                stdbrd[y][x] += old[y + y_move][x + x_move]
-                stdbrd[y + y_move][x + x_move] = None
-                old[y + y_move][x + x_move] = None
-            except TypeError:
-                pass
-            except IndexError:
-                pass
-            except ValueError:
-                pass
+    for x, y in pl.points_of(stdbrd):
+        try:
+            stdbrd[x, y] += old_board[x, y + 1]
+            stdbrd[x, y + 1] = None
+            old_board[x, y + 1] = None
+        except TypeError:
+            pass
+        except IndexError:
+            pass
 
-    for y in range(1, 4):
-        for x in range(4):
-            i = y
-            try:
-                while stdbrd[i-1][x] is None:
-                    stdbrd[i-1][x] = stdbrd[y][x]
-                    stdbrd[i][x] = None
-                    i -= 1
-            except IndexError:
-                pass
+    for x, y in pl.points([4], [1, 4]):
+        i = y
+        try:
+            while stdbrd[x, i - 1] is None:
+                stdbrd[x, i - 1] = stdbrd[x, y]
+                stdbrd[x, i] = None
+                i -= 1
+        except IndexError:
+            pass
 
-    place_tile(stdbrd)
+            # place_tile(stdbrd)
 
 
 def move_down(stdbrd):
-    x_move, y_move = 0, 1
-    old = pl.copy(stdbrd)
+    old_board = pl.copy(stdbrd)
 
-    for y in range(4, -1, -1):
-        for x in range(4, -1, -1):
-            try:
-                stdbrd[y][x] += old[y - y_move][x - x_move]
-                stdbrd[y - y_move][x - x_move] = None
-                old[y - y_move][x - x_move] = None
-            except TypeError:
-                pass
-            except IndexError:
-                pass
-            except ValueError:
-                pass
+    for x, y in pl.points([4, -1, -1], [4, -1, -1]):
+        try:
+            stdbrd[x, y] += old_board[x, y - 1]
+            stdbrd[x, y - 1] = None
+            old_board[x, y - 1] = None
+        except TypeError:
+            pass
+        except IndexError:
+            pass
 
-    for y in range(3, -1, -1):
-        for x in range(4, -1, -1):
-            i = y
-            try:
-                while stdbrd[i+1][x] is None:
-                    stdbrd[i+1][x] = stdbrd[y][x]
-                    stdbrd[i][x] = None
-                    i += 1
-            except IndexError:
-                pass
+    for x, y in pl.points([4, -1, -1], [3, -1, -1]):
+        i = y
+        try:
+            while stdbrd[x, i + 1] is None:
+                stdbrd[x, i + 1] = stdbrd[x, y]
+                stdbrd[x, i] = None
+                i += 1
+        except IndexError:
+            pass
 
-    place_tile(stdbrd)
+            # place_tile(stdbrd)
 
 
 def move_left(stdbrd):
-    x_move, y_move = 1, 0
-    old = pl.copy(stdbrd)
+    old_board = pl.copy(stdbrd)
 
-    for x in range(4):
-        for y in range(4):
-            try:
-                stdbrd[y][x] += old[y][x + x_move]
-                stdbrd[y][x + x_move] = None
-                old[y][x + x_move] = None
-            except TypeError:
-                pass
-            except IndexError:
-                pass
-            except ValueError:
-                pass
+    for y, x in pl.points_of(stdbrd):
+        try:
+            stdbrd[x, y] += old_board[x + 1, y]
+            stdbrd[x + 1, y] = None
+            old_board[x + 1, y] = None
+        except TypeError:
+            pass
+        except IndexError:
+            pass
 
-    for x in range(1, 4):
-        for y in range(4):
-            i = x
-            try:
-                while stdbrd[y][i-1] is None:
-                    stdbrd[y][i-1] = stdbrd[y][x]
-                    stdbrd[y][i] = None
-                    i -= 1
-            except IndexError:
-                pass
+    for y, x in pl.points([4], [1, 4]):
+        i = x
+        try:
+            while stdbrd[i - 1, y] is None:
+                stdbrd[i - 1, y] = stdbrd[x, y]
+                stdbrd[i, y] = None
+                i -= 1
+        except IndexError:
+            pass
 
-    place_tile(stdbrd)
+            # place_tile(stdbrd)
 
 
 def move_right(stdbrd):
-    x_move, y_move = 1, 0
-    old = pl.copy(stdbrd)
+    old_board = pl.copy(stdbrd)
 
-    for x in range(4, -1, -1):
-        for y in range(4, -1, -1):
-            try:
-                stdbrd[y][x] += old[y][x - x_move]
-                stdbrd[y][x - x_move] = None
-                old[y][x - x_move] = None
-            except TypeError:
-                pass
-            except IndexError:
-                pass
-            except ValueError:
-                pass
+    for y, x in pl.points([4, -1, -1], [4, -1, -1]):
+        try:
+            stdbrd[x, y] += old_board[x - 1, y]
+            stdbrd[x - 1, y] = None
+            old_board[x - 1, y] = None
+        except TypeError:
+            pass
+        except IndexError:
+            pass
 
-    for x in range(3, -1, -1):
-        for y in range(4, -1, -1):
-            i = x
-            try:
-                while stdbrd[y][i+1] is None:
-                    stdbrd[y][i+1] = stdbrd[y][x]
-                    stdbrd[y][i] = None
-                    i += 1
-            except IndexError:
-                pass
+    for y, x in pl.points([4, -1, -1], [3, -1, -1]):
+        i = x
+        try:
+            while stdbrd[i + 1, y] is None:
+                stdbrd[i + 1, y] = stdbrd[x, y]
+                stdbrd[i, y] = None
+                i += 1
+        except IndexError:
+            pass
 
-    place_tile(stdbrd)
+            # place_tile(stdbrd)

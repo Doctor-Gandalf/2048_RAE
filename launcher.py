@@ -15,7 +15,8 @@ def app(stdscr):
     vc.init(stdscr)
 
     # Start screen and run first command
-    should_play = gc.show_startup(stdscr, board)
+    # should_play = gc.show_startup(stdscr, board)
+    should_play = True
 
     if should_play:
         # Continue executing commands until app ends.
