@@ -14,20 +14,20 @@ def finish(stdbrd):
 
 
 def board_up(stdbrd):
-    brd.move(stdbrd, 'up')
+    brd.move_tiles(stdbrd, 'up')
     return True
 
 
 def board_down(stdbrd):
-    brd.move(stdbrd, 'down')
+    brd.move_tiles(stdbrd, 'down')
     return True
 
 
 def board_left(stdbrd):
-    brd.move(stdbrd, 'left')
+    brd.move_tiles(stdbrd, 'left')
     return True
 
 
 def board_right(stdbrd):
-    brd.move(stdbrd, 'right')
+    brd.move_tiles(stdbrd, 'right')
     return True

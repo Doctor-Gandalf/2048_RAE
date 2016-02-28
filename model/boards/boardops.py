@@ -50,19 +50,19 @@ def place_tile(stdbrd):
     return stdbrd
 
 
-def move(stdbrd, direction):
+def move_tiles(stdbrd, direction):
     if direction == 'up':
-        vertical_sum(stdbrd, 1, pl.get_dimensions(stdbrd))
-        vertical_slide(stdbrd, lambda x: x - 1, [[4], [1, 4]])
+        vertical_sum(stdbrd, move=1, dimensions=pl.get_dimensions(stdbrd))
+        vertical_slide(stdbrd, dir_func=lambda x: x - 1, dimensions=[[4], [1, 4]])
     elif direction == 'down':
-        vertical_sum(stdbrd, -1, [[4, -1, -1], [4, -1, -1]])
-        vertical_slide(stdbrd, lambda x: x + 1, [[4, -1, -1], [3, -1, -1]])
+        vertical_sum(stdbrd, move=-1, dimensions=[[4, -1, -1], [4, -1, -1]])
+        vertical_slide(stdbrd, dir_func=lambda x: x + 1, dimensions=[[4, -1, -1], [3, -1, -1]])
     elif direction == 'left':
-        horizontal_sum(stdbrd, 1, pl.get_dimensions(stdbrd))
-        horizontal_slide(stdbrd, lambda x: x - 1, [[4], [1, 4]])
+        horizontal_sum(stdbrd, move=1, dimensions=pl.get_dimensions(stdbrd))
+        horizontal_slide(stdbrd, dir_func=lambda x: x - 1, dimensions=[[4], [1, 4]])
     elif direction == 'right':
-        horizontal_sum(stdbrd, -1, [[4, -1, -1], [4, -1, -1]])
-        horizontal_slide(stdbrd, lambda x: x + 1, [[4, -1, -1], [3, -1, -1]])
+        horizontal_sum(stdbrd, move=-1, dimensions=[[4, -1, -1], [4, -1, -1]])
+        horizontal_slide(stdbrd, dir_func=lambda x: x + 1, dimensions=[[4, -1, -1], [3, -1, -1]])
 
     # place_tile(stdbrd)
 
@@ -97,29 +97,29 @@ def horizontal_sum(stdbrd, move, dimensions):
             pass
 
 
-def vertical_slide(stdbrd, direction_function, dimensions):
+def vertical_slide(stdbrd, dir_func, dimensions):
     width, height = dimensions
 
     for x, y in pl.points(width, height):
         i = y
         try:
-            while stdbrd[x, direction_function(i)] is None:
-                stdbrd[x, direction_function(i)] = stdbrd[x, y]
+            while stdbrd[x, dir_func(i)] is None:
+                stdbrd[x, dir_func(i)] = stdbrd[x, y]
                 stdbrd[x, i] = None
-                i = direction_function(i)
+                i = dir_func(i)
         except IndexError:
             pass
 
 
-def horizontal_slide(stdbrd, direction_function, dimensions):
+def horizontal_slide(stdbrd, dir_func, dimensions):
     width, height = dimensions
 
     for y, x in pl.points(width, height):
         i = x
         try:
-            while stdbrd[direction_function(i), y] is None:
-                stdbrd[direction_function(i), y] = stdbrd[x, y]
+            while stdbrd[dir_func(i), y] is None:
+                stdbrd[dir_func(i), y] = stdbrd[x, y]
                 stdbrd[i, y] = None
-                i = direction_function(i)
+                i = dir_func(i)
         except IndexError:
             pass
