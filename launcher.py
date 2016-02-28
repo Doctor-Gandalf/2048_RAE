@@ -1,10 +1,11 @@
 #!/usr/bin/python3
-import os
-import curses
+from os import chdir
+from curses import wrapper
+from model.boards import board
+
 import controller.settingloader as sl
 import controller.viewcontrols as vc
 import controller.gamecontrols as gc
-from model.boards import board
 
 __author__ = 'Kellan Childers'
 
@@ -25,7 +26,7 @@ def app(stdscr):
 
 if __name__ == "__main__":
     # Set the cwd to the main directory to avoid load bugs.
-    os.chdir(sl.get_main_directory())
+    chdir(sl.get_main_directory())
 
     # Ensure app launches and exits without exceptions.
-    curses.wrapper(app)
+    wrapper(app)
