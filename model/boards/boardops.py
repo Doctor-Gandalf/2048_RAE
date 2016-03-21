@@ -52,45 +52,33 @@ def place_tile(stdbrd):
 
 def move_tiles(stdbrd, direction):
     if direction == 'up':
-        vertical_sum(stdbrd, move=1, dimensions=pl.get_dimensions(stdbrd))
+        sum_tiles(stdbrd, move=(0, 1), dimensions=pl.get_dimensions(stdbrd))
         vertical_slide(stdbrd, dir_func=lambda x: x - 1, dimensions=[[4], [1, 4]])
     elif direction == 'down':
-        vertical_sum(stdbrd, move=-1, dimensions=[[4, -1, -1], [4, -1, -1]])
+        sum_tiles(stdbrd, move=(0, -1), dimensions=[[4, -1, -1], [4, -1, -1]])
         vertical_slide(stdbrd, dir_func=lambda x: x + 1, dimensions=[[4, -1, -1], [3, -1, -1]])
     elif direction == 'left':
-        horizontal_sum(stdbrd, move=1, dimensions=pl.get_dimensions(stdbrd))
+        sum_tiles(stdbrd, move=(1, 0), dimensions=pl.get_dimensions(stdbrd), horizontal=True)
         horizontal_slide(stdbrd, dir_func=lambda x: x - 1, dimensions=[[4], [1, 4]])
     elif direction == 'right':
-        horizontal_sum(stdbrd, move=-1, dimensions=[[4, -1, -1], [4, -1, -1]])
+        sum_tiles(stdbrd, move=(-1, 0), dimensions=[[4, -1, -1], [4, -1, -1]], horizontal=True)
         horizontal_slide(stdbrd, dir_func=lambda x: x + 1, dimensions=[[4, -1, -1], [3, -1, -1]])
 
-    # place_tile(stdbrd)
+    place_tile(stdbrd)
 
 
-def vertical_sum(stdbrd, move, dimensions):
+def sum_tiles(stdbrd, move, dimensions, horizontal=False):
+    move_x, move_y = move
     width, height = dimensions
     old_board = pl.copy(stdbrd)
 
     for x, y in pl.points(width, height):
+        if horizontal:
+            x, y = (x, y)[::-1]
         try:
-            stdbrd[x, y] += old_board[x, y + move]
-            stdbrd[x, y + move] = None
-            old_board[x, y + move] = None
-        except TypeError:
-            pass
-        except IndexError:
-            pass
-
-
-def horizontal_sum(stdbrd, move, dimensions):
-    width, height = dimensions
-    old_board = pl.copy(stdbrd)
-
-    for y, x in pl.points(width, height):
-        try:
-            stdbrd[x, y] += old_board[x + move, y]
-            stdbrd[x + move, y] = None
-            old_board[x + move, y] = None
+            stdbrd[x, y] += old_board[x + move_x, y + move_y]
+            stdbrd[x + move_x, y + move_y] = None
+            old_board[x + move_x, y + move_y] = None
         except TypeError:
             pass
         except IndexError:
@@ -104,8 +92,7 @@ def vertical_slide(stdbrd, dir_func, dimensions):
         i = y
         try:
             while stdbrd[x, dir_func(i)] is None:
-                stdbrd[x, dir_func(i)] = stdbrd[x, y]
-                stdbrd[x, i] = None
+                stdbrd[x, dir_func(i)], stdbrd[x, y] = stdbrd[x, y], stdbrd[x, dir_func(i)]
                 i = dir_func(i)
         except IndexError:
             pass
@@ -118,8 +105,7 @@ def horizontal_slide(stdbrd, dir_func, dimensions):
         i = x
         try:
             while stdbrd[dir_func(i), y] is None:
-                stdbrd[dir_func(i), y] = stdbrd[x, y]
-                stdbrd[i, y] = None
+                stdbrd[dir_func(i), y], stdbrd[x, y] = stdbrd[x, y], stdbrd[dir_func(i), y]
                 i = dir_func(i)
         except IndexError:
             pass

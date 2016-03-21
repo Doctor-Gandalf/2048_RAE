@@ -38,8 +38,8 @@ def play_game(stdscr, stdbrd):
     :return: null
     """
     # Add two tiles at start of game.
-    # stdbrd = brd.place_tile(stdbrd)
-    # stdbrd = brd.place_tile(stdbrd)
+    stdbrd = brd.place_tile(stdbrd)
+    stdbrd = brd.place_tile(stdbrd)
 
     import model.plots as pl
     for x, y in pl.points_of(stdbrd):
